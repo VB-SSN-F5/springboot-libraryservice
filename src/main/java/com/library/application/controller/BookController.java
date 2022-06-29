@@ -71,6 +71,8 @@ public class BookController {
 		return new ResponseEntity<>(book, HttpStatus.OK);
 	}
 	
+	/** Add @DeleteMapping **/
+	
 	@GetMapping("/test")
 	public ResponseEntity<String> testApi()
 	{
