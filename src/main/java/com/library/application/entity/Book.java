@@ -28,17 +28,21 @@ public class Book {
 	@Column
 	private int rating;
 	
+	@Column
+	private String author;
+	
 	public Book()
 	{
 		super();
 	}
 
-	public Book(int id, String name, String summary, int rating) {
+	public Book(int id, String name, String summary, int rating, String author) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.summary = summary;
 		this.rating = rating;
+		this.author = author;
 	}
 
 	public int getId() {
@@ -71,6 +75,14 @@ public class Book {
 
 	public void setRating(int rating) {
 		this.rating = rating;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	@Override

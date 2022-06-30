@@ -40,8 +40,8 @@ public class BookControllerTest {
 	@InjectMocks
 	private BookController bookController;
 	
-	Book book = new Book(1, "Alchemist", "Self Motivation book", 3);
-	Book book2 = new Book(2, "Five Point Someone", "About 3 idiots", 3);
+	Book book = new Book(1, "Alchemist", "Self Motivation book", 3, "Paulo Coelho");
+	Book book2 = new Book(2, "Five Point Someone", "About 3 idiots", 3, "Chetan Bhagat");
 	
 	@BeforeEach
 	public void setUp()

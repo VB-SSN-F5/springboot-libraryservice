@@ -67,11 +67,14 @@ public class BookController {
 		book.setName(bookRecord.getName());
 		book.setSummary(bookRecord.getSummary());
 		book.setRating(bookRecord.getRating());
+		book.setAuthor(bookRecord.getAuthor());
 		
 		return new ResponseEntity<>(book, HttpStatus.OK);
 	}
 	
 	/** Add @DeleteMapping **/
+	
+	/** Add @PatchMapping **/
 	
 	@GetMapping("/test")
 	public ResponseEntity<String> testApi()
