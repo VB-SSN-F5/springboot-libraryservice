@@ -20,4 +20,10 @@ public class BookService implements BookServiceInterface{
 		return bookRecordsByRating;
 	}
 
+	@Override
+	public List<Book> findBooksByAuthor(String author) {
+		List<Book> bookRecordsByAuthor = bookRepository.findByAuthor(author);
+		return bookRecordsByAuthor;
+	}
+
 }

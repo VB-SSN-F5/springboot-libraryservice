@@ -50,6 +50,13 @@ public class BookController {
 		return new ResponseEntity<>(bookRecords, HttpStatus.OK);
 	}
 	
+	@GetMapping("author/{author}")
+	public ResponseEntity<List<Book>> getBookbyAuthor(@PathVariable("author") String author)
+	{
+		List<Book> bookRecords = bookServiceInterface.findBooksByAuthor(author);
+		return new ResponseEntity<>(bookRecords, HttpStatus.OK);
+	}
+	
 	@PostMapping("/add")
 	public ResponseEntity<Book> createBookRecord(@RequestBody Book bookRecord)
 	{

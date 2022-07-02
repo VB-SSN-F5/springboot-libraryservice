@@ -8,4 +8,6 @@ public interface BookServiceInterface {
 	
 	List<Book> findBooksByRating(int rating);
 
+	List<Book> findBooksByAuthor(String author);
+
 }
