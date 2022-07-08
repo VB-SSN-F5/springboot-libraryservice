@@ -1,69 +1,77 @@
 package com.library.application;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.library.application.controller.BookController;
 import com.library.application.entity.Book;
 import com.library.application.repository.BookRepository;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class BookControllerTest {
 	
-	private MockMvc mockMvc;
+	@Autowired
+    private MockMvc mockMvc;
 	
-	ObjectMapper objectMapper = new ObjectMapper();
-	ObjectWriter objectWriter = objectMapper.writer();
-	
-	@Mock
-	private BookRepository bookRepo;
-	
-	@InjectMocks
-	private BookController bookController;
+	@MockBean
+	BookRepository bookRepo;
 	
 	Book book = new Book(1, "Alchemist", "Self Motivation book", 3, "Paulo Coelho");
-	Book book2 = new Book(2, "Five Point Someone", "About 3 idiots", 3, "Chetan Bhagat");
 	
-	@BeforeEach
-	public void setUp()
+	@Test
+	@DisplayName("GET /book/test")
+	public void checkTestAPI() throws Exception
 	{
-		System.out.println("Start Test...");
-		MockitoAnnotations.initMocks(this);
-		mockMvc = MockMvcBuilders.standaloneSetup(bookController).build();
+		RequestBuilder reqBuilder = MockMvcRequestBuilders.get("/book/test");	
+		mockMvc.perform(reqBuilder).andExpect(status().isOk());
 	}
 	
 	@Test
-	public void getAllRecordsSuccess() throws Exception
+	@DisplayName("GET /book/all")
+	//@Disabled
+	public void testGetAllBooksAPI() throws Exception
 	{
 		List<Book> records = new ArrayList<>();
 		records.add(book);
-		records.add(book2);
-		
 		Mockito.when(bookRepo.findAll()).thenReturn(records);
-		
-		RequestBuilder reqBuilder = MockMvcRequestBuilders.get("/book").contentType(MediaType.APPLICATION_JSON);
-			
+
+		RequestBuilder reqBuilder = MockMvcRequestBuilders.get("/book/all").contentType(MediaType.APPLICATION_JSON);	
 		mockMvc.perform(reqBuilder).andExpect(status().isOk());
 	}
-	 
+	
+	@Test
+	@DisplayName("GET /book/id")
+	public void testGetBookByIdAPI() throws Exception
+	{	
+		Book book2 = new Book(2, "Ponniyin Selvan", "Ancient Tamil Novel", 4, "Kalki");
+		Mockito.when(bookRepo.findById(2)).thenReturn(Optional.of(book2));
+		
+		RequestBuilder reqBuilder = MockMvcRequestBuilders.get("/book/id/2").contentType(MediaType.APPLICATION_JSON);
+		mockMvc.perform(reqBuilder).andExpect(status().isOk())
+		// Validate the returned fields
+        .andExpect(jsonPath("$.id", is(2)))
+        .andExpect(jsonPath("$.name", is("Ponniyin Selvan")))
+        .andExpect(jsonPath("$.summary", is("Ancient Tamil Novel")))
+        .andExpect(jsonPath("$.author", is("Kalki")))  //Case sensitive fails here if author name is "kalki"
+        .andExpect(jsonPath("$.rating", is(4)));
+	}
 
 }
